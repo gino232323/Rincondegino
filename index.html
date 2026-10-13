@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rincón de Gino</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Press+Start+2P&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+/* ===== RESET & BASE ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg-dark: #050510;
+  --bg-purple: #0d0a1f;
+  --accent-blue: #00e5ff;
+  --accent-purple: #b14eff;
+  --accent-pink: #ff4ecd;
+  --neon-blue: #00d4ff;
+  --neon-purple: #9d4edd;
+  --text-main: #e0e0ff;
+  --text-dim: #8a8ab0;
+  --card-bg: rgba(15, 10, 40, 0.75);
+  --glow-blue: 0 0 10px #00e5ff, 0 0 20px #00e5ff, 0 0 40px #00e5ff55;
+  --glow-purple: 0 0 10px #b14eff, 0 0 20px #b14eff, 0 0 40px #b14eff55;
+}
+
+html, body {
+  height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: 'Rajdhani', sans-serif;
+  background: var(--bg-dark);
+  color: var(--text-main);
+  min-height: 100vh;
+  position: relative;
+  line-height: 1.6;
+}
+
+/* ===== BACKGROUND LAYERS ===== */
+.bg-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: 
+    radial-gradient(ellipse at 20% 20%, rgba(177, 78, 255, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(0, 229, 255, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(13, 10, 31, 0.9) 0%, var(--bg-dark) 100%);
+  overflow: hidden;
+}
+
+.stars {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(1px 1px at 20px 30px, #fff, transparent),
+    radial-gradient(1px 1px at 40px 70px, rgba(180, 180, 255, 0.8), transparent),
+    radial-gradient(1px 1px at 50px 160px, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 90px 40px, rgba(0, 229, 255, 0.9), transparent),
+    radial-gradient(1px 1px at 130px 80px, #fff, transparent),
+    radial-gradient(1px 1px at 160px 120px, rgba(177, 78, 255, 0.8), transparent),
+    radial-gradient(2px 2px at 200px 50px, #fff, transparent),
+    radial-gradient(1px 1px at 250px 180px, rgba(0, 229, 255, 0.7), transparent),
+    radial-gradient(1px 1px at 300px 90px, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 350px 140px, rgba(177, 78, 255, 0.9), transparent);
+  background-size: 400px 200px;
+  animation: starsMove 80s linear infinite;
+  opacity: 0.6;
+}
+
+@keyframes starsMove {
+  from { transform: translateY(0); }
+  to { transform: translateY(-200px); }
+}
+
+.grid-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(0, 229, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 229, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+  pointer-events: none;
+}
+
+/* Sprites flotantes */
+.sprites-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.sprite {
+  position: absolute;
+  opacity: 0.18;
+  image-rendering: pixelated;
+  animation: floatSprite linear infinite;
+  filter: drop-shadow(0 0 6px rgba(0, 229, 255, 0.4));
+}
+
+@keyframes floatSprite {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0.12;
+  }
+  50% {
+    opacity: 0.25;
+  }
+  100% {
+    transform: translateY(-120vh) rotate(15deg);
+    opacity: 0.08;
+  }
+}
+
+/* Estilos de sprites pixel */
+.pixel-char {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 24px;
+}
+.pc-head {
+  width: 16px;
+  height: 14px;
+  background: #00e5ff;
+  border: 2px solid #b14eff;
+  image-rendering: pixelated;
+  position: relative;
+}
+.pc-head::before,
+.pc-head::after {
+  content: '';
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: #050510;
+  top: 4px;
+}
+.pc-head::before { left: 3px; }
+.pc-head::after { right: 3px; }
+.pc-body {
+  width: 12px;
+  height: 10px;
+  background: #b14eff;
+  margin-top: 1px;
+}
+
+.pixel-star,
+.pixel-heart,
+.pixel-sword,
+.pixel-coin,
+.pixel-alien,
+.pixel-joy,
+.pixel-ghost {
+  filter: drop-shadow(0 0 4px currentColor);
+  color: #00e5ff;
+}
+
+.pixel-heart { color: #ff4ecd; }
+.pixel-sword { color: #b14eff; }
+.pixel-coin { color: #ffd700; }
+.pixel-alien { color: #00e5ff; }
+.pixel-joy { color: #b14eff; }
+.pixel-ghost { color: #e0e0ff; }
+
+
+/* ===== NAVIGATION ===== */
+.top-nav {
+  position: relative;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  gap: 1.2rem;
+  padding: 1.5rem 1rem 0.5rem;
+  flex-wrap: wrap;
+}
+
+.nav-btn {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  background: linear-gradient(145deg, rgba(20, 15, 50, 0.9), rgba(30, 20, 70, 0.8));
+  color: var(--accent-blue);
+  border: 2px solid var(--accent-blue);
+  padding: 0.7rem 1.4rem;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.25s ease;
+  box-shadow: 
+    0 0 8px rgba(0, 229, 255, 0.3),
+    inset 0 0 12px rgba(0, 229, 255, 0.05);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  clip-path: polygon(
+    0 8px, 8px 0, 
+    calc(100% - 8px) 0, 100% 8px,
+    100% calc(100% - 8px), calc(100% - 8px) 100%,
+    8px 100%, 0 calc(100% - 8px)
+  );
+}
+
+.nav-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.2), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.4s ease;
+}
+
+.nav-btn:hover {
+  color: #fff;
+  background: linear-gradient(145deg, rgba(0, 100, 150, 0.4), rgba(80, 30, 150, 0.5));
+  border-color: var(--accent-purple);
+  box-shadow: 
+    0 0 15px rgba(177, 78, 255, 0.6),
+    0 0 30px rgba(0, 229, 255, 0.3),
+    inset 0 0 15px rgba(177, 78, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.nav-btn:hover::before {
+  transform: translateX(100%);
+}
+
+.nav-btn:active {
+  transform: translateY(1px);
+}
+
+.btn-icon {
+  font-size: 0.9rem;
+  color: var(--accent-purple);
+}
+
+.nav-btn:hover .btn-icon {
+  color: var(--accent-pink);
+  text-shadow: 0 0 8px var(--accent-pink);
+}
+
+/* ===== MAIN CONTENT ===== */
+.main-content {
+  position: relative;
+  z-index: 10;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+/* Title */
+.hero {
+  text-align: center;
+  margin-bottom: 3rem;
+  margin-top: 1rem;
+}
+
+.title-container {
+  position: relative;
+  display: inline-block;
+}
+
+.main-title {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 800;
+  font-size: clamp(2rem, 7vw, 3.8rem);
+  letter-spacing: 4px;
+  background: linear-gradient(135deg, #00e5ff 0%, #b14eff 50%, #ff4ecd 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: none;
+  position: relative;
+  filter: drop-shadow(0 0 12px rgba(0, 229, 255, 0.5)) drop-shadow(0 0 25px rgba(177, 78, 255, 0.3));
+  animation: titlePulse 3s ease-in-out infinite;
+}
+
+@keyframes titlePulse {
+  0%, 100% { filter: drop-shadow(0 0 12px rgba(0, 229, 255, 0.5)) drop-shadow(0 0 25px rgba(177, 78, 255, 0.3)); }
+  50% { filter: drop-shadow(0 0 18px rgba(0, 229, 255, 0.7)) drop-shadow(0 0 35px rgba(177, 78, 255, 0.5)); }
+}
+
+.glitch {
+  position: relative;
+}
+
+.subtitle {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.55rem;
+  color: var(--accent-blue);
+  margin-top: 0.8rem;
+  letter-spacing: 2px;
+  opacity: 0.85;
+  text-shadow: 0 0 8px rgba(0, 229, 255, 0.6);
+  animation: blinkSubtitle 2s steps(2) infinite;
+}
+
+@keyframes blinkSubtitle {
+  0%, 90%, 100% { opacity: 0.85; }
+  95% { opacity: 0.3; }
+}
+
+/* ===== INTRO CARD ===== */
+.intro-card {
+  margin: 0 auto;
+  max-width: 700px;
+}
+
+.card-border {
+  background: var(--card-bg);
+  border: 2px solid rgba(0, 229, 255, 0.35);
+  border-radius: 4px;
+  box-shadow: 
+    0 0 20px rgba(0, 229, 255, 0.15),
+    0 0 40px rgba(177, 78, 255, 0.1),
+    inset 0 0 30px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  position: relative;
+  backdrop-filter: blur(8px);
+}
+
+.card-border::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent-blue), var(--accent-purple), transparent);
+  animation: scanBar 4s linear infinite;
+}
+
+@keyframes scanBar {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.7rem 1.2rem;
+  background: rgba(0, 0, 0, 0.35);
+  border-bottom: 1px solid rgba(0, 229, 255, 0.2);
+}
+
+.pixel-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  background: #ff5f56;
+  box-shadow: 0 0 6px #ff5f56;
+}
+.pixel-dot:nth-child(2) {
+  background: #ffbd2e;
+  box-shadow: 0 0 6px #ffbd2e;
+}
+.pixel-dot:nth-child(3) {
+  background: #27c93f;
+  box-shadow: 0 0 6px #27c93f;
+}
+
+.card-label {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.55rem;
+  color: var(--text-dim);
+  margin-left: auto;
+  letter-spacing: 1px;
+}
+
+.card-body {
+  padding: 1.8rem 1.8rem 1.4rem;
+}
+
+.intro-text {
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: var(--text-main);
+  margin-bottom: 1.1rem;
+  line-height: 1.7;
+}
+
+.highlight {
+  color: var(--accent-blue);
+  font-weight: 700;
+  text-shadow: 0 0 8px rgba(0, 229, 255, 0.4);
+}
+
+.email-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  background: linear-gradient(135deg, rgba(0, 229, 255, 0.1), rgba(177, 78, 255, 0.15));
+  border: 1px solid rgba(0, 229, 255, 0.4);
+  color: var(--accent-blue);
+  text-decoration: none;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  transition: all 0.25s ease;
+  border-radius: 3px;
+}
+
+.email-link:hover {
+  background: linear-gradient(135deg, rgba(0, 229, 255, 0.2), rgba(177, 78, 255, 0.25));
+  border-color: var(--accent-purple);
+  color: #fff;
+  box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+.email-icon {
+  font-size: 1.1rem;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 1.2rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-top: 1px solid rgba(0, 229, 255, 0.15);
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.5rem;
+  color: var(--accent-blue);
+  letter-spacing: 1px;
+}
+
+.blink {
+  animation: cursorBlink 1s step-end infinite;
+  color: var(--accent-purple);
+}
+
+@keyframes cursorBlink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* Scanlines overlay */
+.scanlines {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.08) 2px,
+    rgba(0, 0, 0, 0.08) 4px
+  );
+  opacity: 0.4;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  padding: 1.5rem;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  border-top: 1px solid rgba(0, 229, 255, 0.1);
+  background: rgba(5, 5, 16, 0.6);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+  .top-nav {
+    gap: 0.6rem;
+    padding: 1rem 0.5rem 0.3rem;
+  }
+
+  .nav-btn {
+    font-size: 0.65rem;
+    padding: 0.55rem 0.9rem;
+  }
+
+  .main-content {
+    padding: 1.5rem 1rem 3rem;
+  }
+
+  .card-body {
+    padding: 1.3rem 1.2rem 1rem;
+  }
+
+  .intro-text {
+    font-size: 1.05rem;
+  }
+
+  .email-link {
+    font-size: 0.85rem;
+    padding: 0.5rem 0.9rem;
+  }
+}
+  </style>
+</head>
+<body>
+  <!-- Fondo animado con sprites -->
+  <div class="bg-layer">
+    <div class="stars"></div>
+    <div class="sprites-container" id="sprites"></div>
+    <div class="grid-overlay"></div>
+  </div>
+
+  <!-- Navegación superior -->
+  <nav class="top-nav">
+    <button class="nav-btn" data-page="1">
+      <span class="btn-icon">▶</span>
+      <span class="btn-text">INICIO</span>
+    </button>
+    <button class="nav-btn" data-page="2">
+      <span class="btn-icon">◆</span>
+      <span class="btn-text">HERRAMIENTAS</span>
+    </button>
+    <button class="nav-btn" data-page="3">
+      <span class="btn-icon">★</span>
+      <span class="btn-text">CONTACTO</span>
+    </button>
+  </nav>
+
+  <!-- Contenido principal -->
+  <main class="main-content">
+    <header class="hero">
+      <div class="title-container">
+        <div class="glitch" data-text="RINCÓN DE GINO">
+          <h1 class="main-title">RINCÓN DE GINO</h1>
+        </div>
+        <div class="subtitle">// PLAYER ONE HAS ENTERED //</div>
+      </div>
+    </header>
+
+    <section class="intro-card">
+      <div class="card-border">
+        <div class="card-header">
+          <span class="pixel-dot"></span>
+          <span class="pixel-dot"></span>
+          <span class="pixel-dot"></span>
+          <span class="card-label">ABOUT_ME.exe</span>
+        </div>
+        <div class="card-body">
+          <p class="intro-text">
+            Hola, soy <span class="highlight">Hugo "Gino" Hermosillo</span>, y quiero ayudarte con ciertas partes de tu proyecto.
+          </p>
+          <p class="intro-text">
+            He creado algunas herramientas con ayuda de las IA, y otras por mi propia mano.
+            Te dejo algunas. Cualquier crítica o ayuda, puedes contactarme a:
+          </p>
+          <a href="mailto:Ginohermosillo@gmail.com" class="email-link">
+            <span class="email-icon">✉</span>
+            Ginohermosillo@gmail.com
+          </a>
+        </div>
+        <div class="card-footer">
+          <span class="status">STATUS: ONLINE</span>
+          <span class="blink">▮</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="scanlines"></div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Rincón de Gino — All rights reserved in this dimension</p>
+  </footer>
+
+  <script>
+// ===== SPRITES 2D SEMITRANSPARENTES =====
+const spritesContainer = document.getElementById('sprites');
+
+// Sprites simples en estilo pixel art usando CSS (formas geométricas + emojis estilizados)
+const spriteTypes = [
+  // Personaje simple (cuadrado con ojos)
+  `<div class="pixel-char">
+    <div class="pc-head"></div>
+    <div class="pc-body"></div>
+  </div>`,
+  // Estrella pixel
+  `<div class="pixel-star">★</div>`,
+  // Corazón pixel
+  `<div class="pixel-heart">♥</div>`,
+  // Espada / power-up
+  `<div class="pixel-sword">⚔</div>`,
+  // Moneda
+  `<div class="pixel-coin">●</div>`,
+  // Alien simple
+  `<div class="pixel-alien">👾</div>`,
+  // Joystick
+  `<div class="pixel-joy">🕹</div>`,
+  // Fantasma
+  `<div class="pixel-ghost">👻</div>`,
+];
+
+function createSprite() {
+  const sprite = document.createElement('div');
+  sprite.className = 'sprite';
+  
+  const type = spriteTypes[Math.floor(Math.random() * spriteTypes.length)];
+  sprite.innerHTML = type;
+  
+  // Posición aleatoria
+  const startX = Math.random() * 100;
+  sprite.style.left = startX + 'vw';
+  sprite.style.bottom = '-80px';
+  
+  // Tamaño aleatorio
+  const size = 18 + Math.random() * 28;
+  sprite.style.fontSize = size + 'px';
+  
+  // Duración y delay aleatorios
+  const duration = 12 + Math.random() * 20;
+  const delay = Math.random() * 8;
+  sprite.style.animationDuration = duration + 's';
+  sprite.style.animationDelay = delay + 's';
+  
+  // Rotación inicial
+  sprite.style.transform = `rotate(${Math.random() * 30 - 15}deg)`;
+  
+  spritesContainer.appendChild(sprite);
+  
+  // Limpiar después de la animación
+  setTimeout(() => {
+    sprite.remove();
+  }, (duration + delay) * 1000);
+}
+
+// Generar sprites continuamente
+function spawnSprites() {
+  createSprite();
+  const next = 800 + Math.random() * 1500;
+  setTimeout(spawnSprites, next);
+}
+
+// Iniciar algunos al cargar
+for (let i = 0; i < 6; i++) {
+  setTimeout(createSprite, i * 400);
+}
+spawnSprites();
+
+// ===== BOTONES (placeholder para futuras páginas) =====
+document.querySelectorAll('.nav-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const page = btn.dataset.page;
+    
+    // Efecto visual de click
+    btn.style.transform = 'scale(0.95)';
+    setTimeout(() => {
+      btn.style.transform = '';
+    }, 150);
+    
+    // Por ahora solo log / feedback visual
+    // Más adelante se configurará para cambiar de página
+    console.log(`Navegando a página ${page}... (pendiente de configurar)`);
+    
+    // Pequeño feedback visual en el título
+    const title = document.querySelector('.main-title');
+    title.style.transition = 'filter 0.3s';
+    title.style.filter = 'drop-shadow(0 0 25px #ff4ecd) drop-shadow(0 0 40px #b14eff)';
+    setTimeout(() => {
+      title.style.filter = '';
+    }, 400);
+  });
+});
+
+// ===== EFECTO DE ENTRADA =====
+window.addEventListener('load', () => {
+  document.body.style.opacity = '0';
+  document.body.style.transition = 'opacity 0.8s ease';
+  requestAnimationFrame(() => {
+    document.body.style.opacity = '1';
+  });
+});
+  </script>
+</body>
+</html>
